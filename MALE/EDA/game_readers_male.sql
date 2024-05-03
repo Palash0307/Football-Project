@@ -1,6 +1,24 @@
 show databases
 use palash;
 Select * from male_players;
+
+Select Nation,count(Name)
+from male_players
+group by 1
+order by 2 desc;
+
+SELECT 
+    Nation,
+    COUNT(Name) AS total_players_in_nation,
+    SUM(COUNT(Name)) OVER (ORDER BY COUNT(Name) ASC) AS rolling_total_players
+FROM 
+    male_players
+WHERE 
+    Nation = Club_Country and Nation not in ('Italy','England','Spain','Germany','France') and age<35
+GROUP BY 
+    Nation
+ORDER BY 
+    total_players_in_nation ASC;
 --------------------------------------------------------------------------------------------------------------------------------------------
 create or replace view game_readers_male as
 Select *,(Finishing/Physicality) as fine_finisher,(Defending/Physicality) as fine_defender

@@ -2,6 +2,64 @@ Use palash;
 Show tables;
 Select * from female_players;
 
+
+
+SELECT 
+    Nation,
+    COUNT(Name) AS total_players_in_nation,
+    SUM(COUNT(Name)) OVER (ORDER BY COUNT(Name) ASC) AS rolling_total_players
+FROM 
+    female_players
+WHERE 
+    Nation = Club_Country
+GROUP BY 
+    Nation
+ORDER BY 
+    total_players_in_nation ASC;
+
+
+
+SELECT 
+    Nation,
+    COUNT(Name) AS player_count,
+    a.sum_total
+FROM 
+    (
+        SELECT 
+            *,
+            COUNT(*) OVER (ORDER BY COUNT(Name) ASC) AS sum_total
+        FROM 
+            female_players
+        WHERE 
+            Nation = Club_Country
+    ) AS a
+GROUP BY 
+    Nation, 
+    a.sum_total
+ORDER BY 
+    player_count ASC;
+
+
+SELECT
+    Nation,
+    COUNT(Name) AS player_count,
+    SUM(count(Name)) OVER (PARTITION BY Nation) AS sum_total,
+FROM
+    (
+        SELECT
+            *,
+            SUM(COUNT(Name)) OVER (PARTITION BY Nation) AS sum_total
+        FROM
+            female_players
+        WHERE
+            Nation = Club_Country
+    ) AS a
+GROUP BY
+    Nation
+ORDER BY
+    player_count ASC;
+
+
 Alter table female_players
 RENAME column `Long` to long_shot;
 
